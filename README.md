@@ -5,8 +5,9 @@ This Dispatch Maker takes an owner report (using Racoda's [owner report](https:/
 1. Run `query.py` to create a list of cards to find the owners of.
     - If the cards you're looking for aren't queryable, you can manually add the card URLs in `query_links.txt`.
     - **Sample queries**
+
     | What I want to search  | My query |
-    | ------------- |-------------|
+    | ------------- | ------------- |
     | S2 TEP cards I haven't collected | `region:the_east_pacific&!deck:s2_tep_collector` |
     | Cards with the Delegate badge at auction | `badge:delegate&auction` |
     | GIF flags *(pronounced with a hard G don't @ me)* | `flag:gif` |
