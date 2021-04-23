@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-version = 3.0
+version = 3.1
 print("Version No. %.1f" % version)
 
 # if you want more flexibility, you can use the custom query
@@ -38,15 +38,8 @@ soup = BeautifulSoup(reqs.text, 'html.parser')
 print("Finished accessing r3n\'s server")
 
 print("Writing the output of said query into file")
-with open('query_links.txt', 'w') as f:
+with open('cards.txt', 'w') as f:
 	a = soup.find_all('a')
 	for i in range(1, len(a)-1):
 		f.write(a[i].get('href') + '\n')
 	f.write(a[len(a)-1].get('href'))
-
-links = open('query_links.txt', 'r')
-cards = open('cards.txt', 'w')
-for link in links:
-	link = link.replace("https://www.nationstates.net/page=deck/card=", "")
-	link = link.replace("/season=", " ")
-	cards.write(link)
