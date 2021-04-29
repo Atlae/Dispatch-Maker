@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+
+"""
+ * Copyright (c) 2020 dithpri (Racoda) <dithpri@gmail.com>
+ * This file is part of RCES: https://github.com/dithpri/RCES and licensed under
+ * the MIT license. See LICENSE.md or
+ * https://github.com/dithpri/RCES/blob/master/LICENSE.md for more details.
+"""
+
 import sys
 import requests
 from bs4 import BeautifulSoup
