@@ -6,6 +6,7 @@ This Dispatch Maker v.4.0 takes an owner report (using Racoda's [owner report](h
     - It may yell at you that you may need to download the [sans](https://pypi.org/project/sans/) library (by Darcania/Zephyrkul). 
         - If so, make sure that you are using a version of Python that is at least 3.6 but at most 3.8 (3.9 not included).
         - Run `pip install sans` in your command line/terminal.
+        - If you do have 3.9 or an earlier version of Python, download a version of Python like 3.8 and run the following in your command prompt: `py -3.8 allinone.py` (or your version). 
 
 2. The program will now ask for information, namely your main nation (for the API agent) and the nation you collect from. It will also ask you to enter in a custom query if you're comfortable with that.
     - If the cards you're looking for aren't queryable, you can manually add the card URLs in `cards.txt`.
