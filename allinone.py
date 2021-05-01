@@ -106,10 +106,8 @@ async def main():
                 for s in range(3):
                     cards.add((id, s))
 
-    file_name = datetime.datetime.now().strftime(f"{username} %Y-%m-%d %H-%M-%S.tsv")
+    file_name = datetime.datetime.now().strftime(f"{nation} %Y-%m-%d %H-%M-%S.tsv")
     output_file = open(file_name, "x")
-    # output_file.write("ID\tSEASON\tNUMBER OF OWNERS\tNUMBER OF COPIES\tOWNERS:COPIES\n")
-    # output_file.write("[table][tr][td][b]CARD LINK[/b][/td][td][b]OWNERS[/b][/td][/tr]\n")
     output_file.write("[table][tr][td][b]CARD LINK[/b][/td][td][b]NUMBER OF OWNERS[/b][/td][td][b]NUMBER OF COPIES[/b][/td][td][b]OWNERS[/b][/td][/tr]\n")
     for card in cards:
         id, season = card
