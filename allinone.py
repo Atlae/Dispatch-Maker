@@ -43,7 +43,7 @@ async def ratelimit():
         await asyncio.sleep(xra)
 
 async def main():
-    version = 4.0
+    version = 4.2
     print("Version No. %.1f" % version)
     username = ""
     while not username:
@@ -51,15 +51,17 @@ async def main():
     Api.agent = f"Owner Report (dev. Atlae) (in use by {username})"
     bidsTrue = False
     nation = input("What nation are you collecting from? ").lower().replace(" ", "_")
-    query_season = 3
-    while query_season not in [1, 2]:
-        query_season = input("What season are you looking for? (1 or 2) ")
+    query_season = -1
+    while query_season not in [0, 1, 2, 3]:
+        query_season = input("What season are you looking for? (1 or 2, 0 for both) ")
         try:
             query_season = int(query_season)
         except ValueError:
             print("That's not a number!")
-        except query_season == 3:
-            print("S3 will never come.")
+    if query_season == 3:
+        print("S3 will never come.")
+        await asyncio.sleep(0)
+        sys.exit()
     custom = input("Do you want to make your own custom query? (yes/no) ").lower().startswith('y')
     if not custom:
         region = input("What region are you searching? ").lower().replace(" ", "_")
@@ -67,26 +69,51 @@ async def main():
         if bids.lower().startswith('y'):
             bidsTrue = True
 
-    if custom:
-        posted_query = input("Please enter your query using the Advanced Cards Queries syntax: ")
-        processed_query = posted_query.replace(":", "%3A").replace("&", "%26").replace("!", "%21").replace("|", "%7C").replace(" ", "+").replace("(", "%28").replace(")", "%29")
-        query = f'http://azure.nsr3n.info/card_queries/get_daemon_advanced.sh?format=full&query={processed_query}&season={query_season}&format=full&submit=submit'
-    elif bidsTrue:
-        query = f'http://azure.nsr3n.info/card_queries/get_daemon_advanced.sh?format=full&query=region%3A{region}%26%21deck%3A{nation}%26%21bid%3A{nation}&season={query_season}&format=full&submit=submit'
+    open("cards.txt", "w")
+    if query_season != 0:
+        if custom:
+            posted_query = input("Please enter your query using the Advanced Cards Queries syntax: ")
+            processed_query = posted_query.replace(":", "%3A").replace("&", "%26").replace("!", "%21").replace("|", "%7C").replace(" ", "+").replace("(", "%28").replace(")", "%29")
+            query = f'http://azure.nsr3n.info/card_queries/get_daemon_advanced.sh?format=full&query={processed_query}&season={query_season}&format=full&submit=submit'
+        elif bidsTrue:
+            query = f'http://azure.nsr3n.info/card_queries/get_daemon_advanced.sh?format=full&query=region%3A{region}%26%21deck%3A{nation}%26%21bid%3A{nation}&season={query_season}&format=full&submit=submit'
+        else:
+            query = f'http://azure.nsr3n.info/card_queries/get_daemon_advanced.sh?format=full&query=region%3A{region}%26%21deck%3A{nation}&season={query_season}&format=full&submit=submit'
+        
+        print('Running...accessing r3n\'s server')
+        reqs = requests.get(query)
+        soup = BeautifulSoup(reqs.text, 'html.parser')
+        print("Finished accessing r3n\'s server")
+
+        print("Writing the output of said query into file")
+        with open('cards.txt', 'a') as f:
+            a = soup.find_all('a')
+            for i in range(1, len(a)-1):
+                f.write(a[i].get('href') + '\n')
+            f.write(a[len(a)-1].get('href'))
     else:
-        query = f'http://azure.nsr3n.info/card_queries/get_daemon_advanced.sh?format=full&query=region%3A{region}%26%21deck%3A{nation}&season={query_season}&format=full&submit=submit'
+        while query_season < 2:
+            query_season += 1
+            if custom:
+                posted_query = input(f"Please enter your query using the Advanced Cards Queries syntax for Season {query_season}: ")
+                processed_query = posted_query.replace(":", "%3A").replace("&", "%26").replace("!", "%21").replace("|", "%7C").replace(" ", "+").replace("(", "%28").replace(")", "%29")
+                query = f'http://azure.nsr3n.info/card_queries/get_daemon_advanced.sh?format=full&query={processed_query}&season={query_season}&format=full&submit=submit'
+            elif bidsTrue:
+                query = f'http://azure.nsr3n.info/card_queries/get_daemon_advanced.sh?format=full&query=region%3A{region}%26%21deck%3A{nation}%26%21bid%3A{nation}&season={query_season}&format=full&submit=submit'
+            else:
+                query = f'http://azure.nsr3n.info/card_queries/get_daemon_advanced.sh?format=full&query=region%3A{region}%26%21deck%3A{nation}&season={query_season}&format=full&submit=submit'
+            
+            print('Running...accessing r3n\'s server')
+            reqs = requests.get(query)
+            soup = BeautifulSoup(reqs.text, 'html.parser')
+            print("Finished accessing r3n\'s server")
 
-    print('Running...accessing r3n\'s server')
-    reqs = requests.get(query)
-    soup = BeautifulSoup(reqs.text, 'html.parser')
-    print("Finished accessing r3n\'s server")
-
-    print("Writing the output of said query into file")
-    with open('cards.txt', 'w') as f:
-        a = soup.find_all('a')
-        for i in range(1, len(a)-1):
-            f.write(a[i].get('href') + '\n')
-        f.write(a[len(a)-1].get('href'))
+            print("Writing the output of said query into file")
+            with open('cards.txt', 'a') as f:
+                a = soup.find_all('a')
+                for i in range(1, len(a)-1):
+                    f.write(a[i].get('href') + '\n')
+                f.write(a[len(a)-1].get('href'))
 
     cards = set()
     with open("cards.txt", "r") as lines:
