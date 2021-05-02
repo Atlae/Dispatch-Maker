@@ -32,7 +32,6 @@ or from https://pypi.org/project/sans/"""
 
 import asyncio
 import datetime
-import json
 import re
 from collections import defaultdict
 
@@ -43,7 +42,7 @@ async def ratelimit():
         await asyncio.sleep(xra)
 
 async def main():
-    version = 5.0
+    version = 5.1
     print("Version No. %.1f" % version)
     username = ""
     while not username:
@@ -61,7 +60,7 @@ async def main():
         print("S3 will never come.")
         await asyncio.sleep(0)
         sys.exit()
-    posted_query = input("Please enter your query using the Advanced Cqrds Queries Syntax. Leave blank if you have a list in cards.txt: ")
+    posted_query = input("Please enter your query using the Advanced Cards Queries Syntax. Leave blank if you have a list in cards.txt: ")
     custom = len(posted_query) > 0
     cards = []
     if custom:
@@ -104,17 +103,17 @@ async def main():
                 # keys = list(dict.keys())
                 # if keys == ['id', 'name', 'season']:
                 #     break
-                if temp := re.match(r"^https?://(www\.)?nationstates.net/page=deck/card=(?P<id>[0-9]+)(/season=(?P<season>[0-9]+))?(\s+)(?P<name>\w+)", line):
+                if temp := re.match(r"^https?://(www\.)?nationstates.net/page=deck/card=(?P<id>[0-9]+)/?(/season=(?P<season>[0-9]+))?/?(\s+)(?P<name>\w+)", line):
                     id, season, name = temp.group("id"), temp.group("season"), temp.group("name")
                 elif temp := re.match("(?P<id>[0-9]+)\s+((?P<name>\w)+\s+(?P<season>[0-9]+))?", line):
                     id, name, season = temp.group("id"), temp.group("name"), temp.group("season")
                 else:
                     eprint(f"Unable to process line {linenum} because you put in a wrong format")
                     continue
-                if 'season' in locals():
+                if season is not None:
                     cards.append({'id': id, 'name': name, 'season': season})
                 else:
-                    for s in range(3):
+                    for s in range(1,3):
                         cards.append({'id': id, 'name': name, 'season': s})
 
     file_name = datetime.datetime.now().strftime(f"{nation} %Y-%m-%d %H-%M-%S.tsv")

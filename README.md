@@ -11,6 +11,9 @@ This Dispatch Maker v.4.0 takes an owner report (using Racoda's [owner report](h
 2. The program will now ask for information, namely your main nation (for the API agent) and the nation you collect from. It will also ask you to enter in a custom query if you're comfortable with that.
     - If you want to collect cards across seasons, you can do so by entering `0` where it asks for the season. And of course, Season 3 does not exist.
     - If the cards you're looking for aren't queryable, you can manually add the card URLs in `cards.txt`. When it asks you to enter in a custom query leave it blank and press enter.
+      - There are two ways to manually enter cards into `cards.txt`.
+        - `[URL] [name]` like `https://www.nationstates.net/page=deck/id=1/season=1 testlandia` (season is optional if you want to check both seasons)
+        - `[id] [name] [season]` like `1 testlandia 1`
     - **Sample queries**
 
     | What I want to search  | My query |
