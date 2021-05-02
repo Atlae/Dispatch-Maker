@@ -43,7 +43,7 @@ async def ratelimit():
         await asyncio.sleep(xra)
 
 async def main():
-    version = 4.2
+    version = 5.0
     print("Version No. %.1f" % version)
     username = ""
     while not username:

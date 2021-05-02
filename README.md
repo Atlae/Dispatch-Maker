@@ -9,7 +9,8 @@ This Dispatch Maker v.4.0 takes an owner report (using Racoda's [owner report](h
         - If you do have 3.9 or an earlier version of Python, download a version of Python like 3.8 and run the following in your command prompt: `py -3.8 allinone.py` (or your version). 
 
 2. The program will now ask for information, namely your main nation (for the API agent) and the nation you collect from. It will also ask you to enter in a custom query if you're comfortable with that.
-    - If the cards you're looking for aren't queryable, you can manually add the card URLs in `cards.txt`.
+    - If you want to collect cards across seasons, you can do so by entering `0` where it asks for the season. And of course, Season 3 does not exist.
+    - If the cards you're looking for aren't queryable, you can manually add the card URLs in `cards.txt`. When it asks you to enter in a custom query leave it blank and press enter.
     - **Sample queries**
 
     | What I want to search  | My query |
