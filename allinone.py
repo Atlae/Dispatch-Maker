@@ -149,8 +149,8 @@ async def main():
                     )
                 ]
             )
-            owners_copies = re.sub(r":\d,", "[/nation][*][nation]", owners_copies)
-            owners_copies = re.sub(r":\d", "[/nation]", owners_copies)
+            owners_copies = re.sub(r":\d+,", "[/nation][*][nation]", owners_copies)
+            owners_copies = re.sub(r":\d+", "[/nation]", owners_copies)
             owners_copies = "[list][*][nation]" + owners_copies + "[/list]"
         output_file.write(
             f"[tr][td]{name}[/td][td][url=https://www.nationstates.net/page=deck/card={id}/season={season}]Link to Card[/url][/td][td]{num_owners}[/td][td]{num_copies}[/td][td]{owners_copies}[/td][/tr]\n"
