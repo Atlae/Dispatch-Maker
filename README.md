@@ -1,6 +1,10 @@
 # Dispatch-Maker
-This Dispatch Maker v.4.0 takes an owner report (using Racoda's [owner report](https://github.com/dithpri/RCES/tree/master/owner_report)) and formats it into a BBCode dispatch.
+This Dispatch Maker v5.1 takes an owner report (using Racoda's [owner report](https://github.com/dithpri/RCES/tree/master/owner_report)) and formats it into a BBCode dispatch.
 
+
+## Disclaimer
+---
+Please use discretion when operating Dispatch-Maker. Please be cognizant of the character limit of dispatches and the spam that dispatches create. Please refer to the [NationStates Rules](https://forum.nationstates.net/viewtopic.php?f=16&t=260044#017) regarding spam as well.
 ## Process
 1. The dispatch making process is now new and improved! You only need to run one program instead of three. Run `allinone.py`.
     - It may yell at you that you may need to download the [sans](https://pypi.org/project/sans/) library (by Darcania/Zephyrkul). 
@@ -12,7 +16,7 @@ This Dispatch Maker v.4.0 takes an owner report (using Racoda's [owner report](h
     - If you want to collect cards across seasons, you can do so by entering `0` where it asks for the season. And of course, Season 3 does not exist.
     - If the cards you're looking for aren't queryable, you can manually add the card URLs in `cards.txt`. When it asks you to enter in a custom query leave it blank and press enter.
       - There are two ways to manually enter cards into `cards.txt`.
-        - `[URL] [name]` like `https://www.nationstates.net/page=deck/id=1/season=1 testlandia` (season is optional if you want to check both seasons)
+        - `[URL] [name]` like `https://www.nationstates.net/page=deck/card=1/season=1 testlandia` (season is optional if you want to check both seasons)
         - `[id] [name] [season]` like `1 testlandia 1`
     - **Sample queries**
 
