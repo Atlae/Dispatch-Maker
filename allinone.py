@@ -7,6 +7,7 @@
  * https://github.com/dithpri/RCES/blob/master/LICENSE.md for more details.
 """
 
+import os
 import sys
 import requests
 
@@ -94,18 +95,27 @@ async def main():
                     for i in range(len(cards)):
                         f.write(str(cards[i]) + '\n')
     else:
+        if not os.path.exists("cards.txt"):
+            eprint("""
+`cards.txt` does not exist in your directory! 
+If you are listing the address in your command-line interface like this:
+    C:/Users/NAME > C:/Users/NAME/your/path/here/allinone.py
+
+Please create `cards.txt` in your C:/Users/NAME directory or `cd` to the directory (strongly recommended) like this:
+    C:/Users/NAME > cd C:/Users/NAME/your/path/here & python allinone.py
+            """)
+            input("Press enter to continue...")
+            await asyncio.sleep(0)
+            sys.exit(1)
         with open("cards.txt", "r") as lines:
             linenum = 0
             for line in lines.readlines():
-                # # +(?P<name>+)
-                # linenum += 1
-                # dict = eval(line)
-                # keys = list(dict.keys())
-                # if keys == ['id', 'name', 'season']:
-                #     break
+                linenum += 1
                 if temp := re.match(r"^https?://(www\.)?nationstates.net/page=deck/card=(?P<id>[0-9]+)/?(/season=(?P<season>[0-9]+))?/?(\s+)(?P<name>\w+)", line):
                     id, season, name = temp.group("id"), temp.group("season"), temp.group("name")
-                elif temp := re.match("(?P<id>[0-9]+)\s+((?P<name>\w)+\s+(?P<season>[0-9]+))?", line):
+                elif temp := re.match("(?P<id>[0-9]+)\s+(?P<name>\w+)(\s+(?P<season>[0-9]+))?", line):
+                    id, name, season = temp.group("id"), temp.group("name"), temp.group("season")
+                elif temp := re.match("{'id': '(?P<id>[0-9]+)', 'name': '(?P<name>\w+)', 'season': '(?P<season>[0-9]+)'}", line):
                     id, name, season = temp.group("id"), temp.group("name"), temp.group("season")
                 else:
                     eprint(f"Unable to process line {linenum} because you put in a wrong format")
@@ -159,4 +169,4 @@ async def main():
     output_file.write("[/table][/box]")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(main(), debug=True)
