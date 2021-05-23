@@ -11,7 +11,12 @@ Please use discretion when operating Dispatch-Maker. Please be cognizant of the 
         - If so, make sure that you are using a version of Python that is at least 3.6 but at most 3.8 (3.9 not included).
         - Run `pip install sans` in your command line/terminal.
         - If you do have 3.9 or an earlier version of Python, download a version of Python like 3.8 and run the following in your command prompt: `py -3.8 allinone.py` (or your version). 
-        - 
+          - Else, `python allinone.py` should work.
+        - **IMPORTANT:** If running Dispatch-Maker from a command-line interface, it is *highly* recommended that you `cd` to the directory before running the file as follows:
+          - ```C:/Users/NAME > cd C:/Users/NAME/your/path/here & python allinone.py```
+          - Do not ```C:/Users/NAME > C:/Users/NAME/your/path/here/allinone.py```
+            - This will result in an error if you want to input cards manually in `cards.txt` but the directory `C:/Users/NAME` does not contain `cards.txt`.
+            - If you insist, create a `cards.txt` file in your `C:/Users/NAME` directory *before* running the file.
 
 2. The program will now ask for information, namely your main nation (for the API agent) and the nation you collect from. It will also ask you to enter in a custom query if you're comfortable with that.
     - If you want to collect cards across seasons, you can do so by entering `0` where it asks for the season. And of course, Season 3 does not exist.
