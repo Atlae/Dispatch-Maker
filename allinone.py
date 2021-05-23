@@ -169,4 +169,4 @@ Please create `cards.txt` in your C:/Users/NAME directory or `cd` to the directo
     output_file.write("[/table][/box]")
 
 if __name__ == "__main__":
-    asyncio.run(main(), debug=True)
+    asyncio.run(main())
