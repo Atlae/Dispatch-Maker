@@ -35,6 +35,7 @@ import asyncio
 import datetime
 import re
 from collections import defaultdict
+from autodispatch import update
 
 async def ratelimit():
     while xra := Api.xra:
@@ -43,13 +44,12 @@ async def ratelimit():
         await asyncio.sleep(xra)
 
 async def main():
-    version = 5.2
+    version = 6.0
     print("Version No. %.1f" % version)
-    username = ""
-    while not username:
-        username = input("Please enter your (main) nation name: ")
+    username = input("What nation are you collecting from? ")
+    nation = username.lower().replace(" ", "_")
+    password = input("What is the password of that nation? ")
     Api.agent = f"Owner Report (dev. Atlae) (in use by {username})"
-    nation = input("What nation are you collecting from? ").lower().replace(" ", "_")
     query_season = -1
     while query_season not in [0, 1, 2, 3]:
         query_season = input("What season are you looking for? (1 or 2, 0 for both) ")
@@ -126,47 +126,52 @@ Please create `cards.txt` in your C:/Users/NAME directory or `cd` to the directo
                     for s in range(1,3):
                         cards.append({'id': id, 'name': name, 'season': s})
 
-    file_name = datetime.datetime.now().strftime(f"{nation} %Y-%m-%d %H-%M-%S.tsv")
-    output_file = open(file_name, "x")
-    output_file.write("[box][i]This table was generated with the help of [nation]Racoda[/nation]'s RCES owner report, which can be found [url=https://github.com/dithpri/RCES]here.[/url] I coded a way to automate this [url=https://github.com/Atlae/Dispatch-Maker]here[/url]. -[nation]Atlae[/nation] ([nation]The Atlae Isles[/nation])[/i][/box]")
-    output_file.write("[box][table][tr][td][b]NAME[/b][/td][td][b]CARD LINK[/b][/td][td][b]NUMBER OF OWNERS[/b][/td][td][b]NUMBER OF COPIES[/b][/td][td][b]OWNERS[/b][/td][/tr]\n")
-    for card in cards:
-        id = card['id']
-        name = card['name']
-        season = card['season']
-        owners_dict = defaultdict(int)
-        num_owners = 0
-        num_copies = 0
-        owners_copies = "[list][*][i]No owners... :([/i][/list]"
-        await ratelimit()
-        result = await Api("card owners", cardid=id, season=season)
-        try:
-            for owner in result.OWNERS.OWNER:
-                num_copies += 1
-                owners_dict[owner.text] += 1
-        except AttributeError:
-            if result.find("OWNERS") == None:
-                eprint(f"Card {id} season {season} does not exist.")
-                continue
-        owners = owners_dict.keys()
-        num_owners = len(owners)
-        if num_owners > 0:
-            owners_copies = ",".join(
-                [
-                    ":".join((a, str(b)))
-                    for a, b in sorted(
-                        owners_dict.items(), key=lambda x: x[1], reverse=True
-                    )
-                ]
+    file_name = datetime.datetime.now().strftime(f"{nation} %Y-%m-%d %H-%M-%S.txt")
+    with open(file_name, "x") as output_file:
+        if os.path.exists("preamble.txt"):
+            with open("preamble.txt", 'r') as p:
+                output_file.write(p.read() + "\n")
+        output_file.write("[box][i]This table was generated with the help of [nation]Racoda[/nation]'s RCES owner report, which can be found [url=https://github.com/dithpri/RCES]here.[/url] I coded a way to automate this [url=https://github.com/Atlae/Dispatch-Maker]here[/url]. -[nation]Atlae[/nation] ([nation]The Atlae Isles[/nation])[/i][/box]\n")
+        output_file.write("[box][table][tr][td][b]NAME[/b][/td][td][b]CARD LINK[/b][/td][td][b]NUMBER OF OWNERS[/b][/td][td][b]NUMBER OF COPIES[/b][/td][td][b]OWNERS[/b][/td][/tr]\n")
+        for card in cards:
+            id = card['id']
+            name = card['name']
+            season = card['season']
+            owners_dict = defaultdict(int)
+            num_owners = 0
+            num_copies = 0
+            owners_copies = "[list][*][i]No owners... :([/i][/list]"
+            await ratelimit()
+            result = await Api("card owners", cardid=id, season=season)
+            try:
+                for owner in result.OWNERS.OWNER:
+                    num_copies += 1
+                    owners_dict[owner.text] += 1
+            except AttributeError:
+                if result.find("OWNERS") == None:
+                    eprint(f"Card {id} season {season} does not exist.")
+                    continue
+            owners = owners_dict.keys()
+            num_owners = len(owners)
+            if num_owners > 0:
+                owners_copies = ",".join(
+                    [
+                        ":".join((a, str(b)))
+                        for a, b in sorted(
+                            owners_dict.items(), key=lambda x: x[1], reverse=True
+                        )
+                    ]
+                )
+                owners_copies = re.sub(r":\d+,", "[/nation][*][nation]", owners_copies)
+                owners_copies = re.sub(r":\d+", "[/nation]", owners_copies)
+                owners_copies = "[list][*][nation]" + owners_copies + "[/list]"
+            output_file.write(
+                f"[tr][td]{name}[/td][td][url=https://www.nationstates.net/page=deck/card={id}/season={season}]Link to Card[/url][/td][td]{num_owners}[/td][td]{num_copies}[/td][td]{owners_copies}[/td][/tr]\n"
             )
-            owners_copies = re.sub(r":\d+,", "[/nation][*][nation]", owners_copies)
-            owners_copies = re.sub(r":\d+", "[/nation]", owners_copies)
-            owners_copies = "[list][*][nation]" + owners_copies + "[/list]"
-        output_file.write(
-            f"[tr][td]{name}[/td][td][url=https://www.nationstates.net/page=deck/card={id}/season={season}]Link to Card[/url][/td][td]{num_owners}[/td][td]{num_copies}[/td][td]{owners_copies}[/td][/tr]\n"
-        )
-        print(f"Added {card}")
-    output_file.write("[/table][/box]")
+            print(f"Added {card}")
+        output_file.write("[/table][/box]")
+    with open(file_name, "r") as output_file:
+        update(username, password, output_file.read())
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(main(), debug=False)
