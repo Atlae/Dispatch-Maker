@@ -44,11 +44,15 @@ async def ratelimit():
         await asyncio.sleep(xra)
 
 async def main():
-    version = 6.0
+    version = 6.1
     print("Version No. %.1f" % version)
-    username = input("What nation are you collecting from? ")
+    username = ""
+    while not username:
+        username = input("What nation are you collecting from? ")
     nation = username.lower().replace(" ", "_")
-    password = input("What is the password of that nation? ")
+    password = ""
+    while not password:
+        password = input("What is the password of that nation? ")
     Api.agent = f"Owner Report (dev. Atlae) (in use by {username})"
     query_season = -1
     while query_season not in [0, 1, 2, 3]:
