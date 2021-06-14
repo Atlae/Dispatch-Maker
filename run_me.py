@@ -10,6 +10,8 @@
 import os
 import sys
 import requests
+import argparse
+from colorama import Fore, Back, Style
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
@@ -43,18 +45,15 @@ async def ratelimit():
         eprint(f"Rate limit reached: sleeping {int(xra)} seconds...")
         await asyncio.sleep(xra)
 
-async def main():
-    version = 6.1
+async def main(username, password, query_season, posted_query):
+    version = 7.0
     print("Version No. %.1f" % version)
-    username = ""
     while not username:
         username = input("What nation are you collecting from? ")
     nation = username.lower().replace(" ", "_")
-    password = ""
     while not password:
         password = input("What is the password of that nation? ")
     Api.agent = f"Owner Report (dev. Atlae) (in use by {username})"
-    query_season = -1
     while query_season not in [0, 1, 2, 3]:
         query_season = input("What season are you looking for? (1 or 2, 0 for both) ")
         try:
@@ -65,7 +64,9 @@ async def main():
         print("S3 will never come.")
         await asyncio.sleep(0)
         sys.exit()
-    posted_query = input("Please enter your query using the Advanced Cards Queries Syntax. Leave blank if you have a list in cards.txt: ")
+    while posted_query is None:
+    # if len(posted_query) == 0:
+        posted_query = input("Please enter your query using the Advanced Cards Queries Syntax. Leave blank if you have a list in cards.txt: ")
     custom = len(posted_query) > 0
     cards = []
     if custom:
@@ -75,9 +76,11 @@ async def main():
             query = f'http://azure.nsr3n.info/card_queries/get_daemon_advanced.sh?format=full&query={processed_query}&season={query_season}&format=json&submit=submit'
             
             print('Running...accessing r3n\'s server')
+            start_time = datetime.datetime.now()
             reqs = requests.get(query)
             cards = reqs.json()['cards']
             print("Finished accessing r3n\'s server")
+            print(datetime.datetime.now() - start_time)
 
             print("Writing the output of said query into file")
             with open('cards.txt', 'a') as f:
@@ -135,6 +138,15 @@ Please create `cards.txt` in your C:/Users/NAME directory or `cd` to the directo
         if os.path.exists("preamble.txt"):
             with open("preamble.txt", 'r') as p:
                 output_file.write(p.read() + "\n")
+        else:
+            eprint("""
+`preamble.txt` does not exist in your directory! 
+If you are listing the address in your command-line interface like this:
+    C:/Users/NAME > C:/Users/NAME/your/path/here/allinone.py
+
+Please create `preamble.txt` in your C:/Users/NAME directory or `cd` to the directory (strongly recommended) like this:
+    C:/Users/NAME > cd C:/Users/NAME/your/path/here & python allinone.py
+            """)
         output_file.write("[box][i]This table was generated with the help of [nation]Racoda[/nation]'s RCES owner report, which can be found [url=https://github.com/dithpri/RCES]here.[/url] I coded a way to automate this [url=https://github.com/Atlae/Dispatch-Maker]here[/url]. -[nation]Atlae[/nation] ([nation]The Atlae Isles[/nation])[/i][/box]\n")
         output_file.write("[box][table][tr][td][b]NAME[/b][/td][td][b]CARD LINK[/b][/td][td][b]NUMBER OF OWNERS[/b][/td][td][b]NUMBER OF COPIES[/b][/td][td][b]OWNERS[/b][/td][/tr]\n")
         for card in cards:
@@ -178,4 +190,11 @@ Please create `cards.txt` in your C:/Users/NAME directory or `cd` to the directo
         update(username, password, output_file.read())
 
 if __name__ == "__main__":
-    asyncio.run(main(), debug=False)
+    parser = argparse.ArgumentParser(prog='run_me', description="Python program to create a formatted dispatch of cards and owners")
+    parser.add_argument('--u', dest='USERNAME', type=str, nargs='?', default=None, help="Plese enter your username.")
+    parser.add_argument('--p', dest='PASSWORD', type=str, nargs='?', default=None, help="Please enter your password (only you can see it).")
+    parser.add_argument('--s', dest='SEASON', type=int, nargs='?', default=-1, help="The season you want to search.")
+    parser.add_argument('--q', dest='QUERY', type=str, nargs='?', default=None, help="Please enter your query using the Advanced Cards Queries Syntax.")
+    args = parser.parse_args()
+    print(args)
+    asyncio.run(main(args.USERNAME, args.PASSWORD, args.SEASON, args.QUERY), debug=False)

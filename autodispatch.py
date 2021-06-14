@@ -46,9 +46,10 @@ def update(USERNAME, PASSWORD, TEXT):
     soup = BeautifulSoup(respond.text, features='xml')
     try:
         token = soup.find('SUCCESS').string
+        print(Back.GREEN + respond.text + Style.RESET_ALL)
     except:
         print("It was not a success. :(")
-    print(Back.GREEN + respond.text + Style.RESET_ALL)
+        print(Back.RED + respond.text + Style.RESET_ALL)
     
     pin = respond.headers["X-Pin"]
     autologin = respond.headers["X-Autologin"]
