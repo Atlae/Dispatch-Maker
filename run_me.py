@@ -60,10 +60,6 @@ async def main(username, password, query_season, posted_query):
             query_season = int(query_season)
         except ValueError:
             print("That's not a number!")
-    if query_season == 3:
-        print("S3 will never come.")
-        await asyncio.sleep(0)
-        sys.exit()
     while posted_query is None:
     # if len(posted_query) == 0:
         posted_query = input("Please enter your query using the Advanced Cards Queries Syntax. Leave blank if you have a list in cards.txt: ")
@@ -87,7 +83,7 @@ async def main(username, password, query_season, posted_query):
                 for i in range(len(cards)):
                     f.write(str(cards[i]) + '\n')
         else:
-            while query_season < 2:
+            while query_season < 3:
                 query_season += 1
                 processed_query = posted_query.replace(":", "%3A").replace("&", "%26").replace("!", "%21").replace("|", "%7C").replace(" ", "+").replace("(", "%28").replace(")", "%29")
                 query = f'http://azure.nsr3n.info/card_queries/get_daemon_advanced.sh?format=full&query={processed_query}&season={query_season}&format=json&submit=submit'
@@ -130,7 +126,7 @@ Please create `cards.txt` in your C:/Users/NAME directory or `cd` to the directo
                 if season is not None:
                     cards.append({'id': id, 'name': name, 'season': season})
                 else:
-                    for s in range(1,3):
+                    for s in range(1,4@):
                         cards.append({'id': id, 'name': name, 'season': s})
 
     file_name = datetime.datetime.now().strftime(f"{nation} %Y-%m-%d %H-%M-%S.txt")
