@@ -126,7 +126,7 @@ Please create `cards.txt` in your C:/Users/NAME directory or `cd` to the directo
                 if season is not None:
                     cards.append({'id': id, 'name': name, 'season': season})
                 else:
-                    for s in range(1,4@):
+                    for s in range(1,4):
                         cards.append({'id': id, 'name': name, 'season': s})
 
     file_name = datetime.datetime.now().strftime(f"{nation} %Y-%m-%d %H-%M-%S.txt")
